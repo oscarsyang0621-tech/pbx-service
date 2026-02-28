@@ -122,7 +122,9 @@
     <div id="tab-list" class="tab-content">
         <div class="filter-bar">
             <select id="filterStatus" onchange="renderTasks()"><option value="">全部狀態</option><option value="new">新案件</option><option value="processing">處理中</option><option value="completed">已完成</option></select>
-            <select id="filterCategory" onchange="renderTasks()"><option value="">全部類型</option><option value="監視系統">監視系統</option><option value="電話交換機">電話交換機</option><option value="對講機">對講機</option><option value="網路系統">網路系統</option><option value="其他">其他</option></select>
+            <input type="text" id="filterCategory" placeholder="分類關鍵字..." onkeyup="renderTasks()">
+            <select id="filterCategoryOld" style="display:none" onchange="renderTasks()"><option value="">全部類型</option><option value="監視系統">監視系統</option><option value="電話交換機">電話交換機</option><option value="對講機">對講機</option><option value="網路系統">網路系統</option><option value="其他">其他</option></select>
+            <select id="filterCategory onchange="renderTasks()"><option value="">全部類型</option><option value="監視系統">監視系統</option><option value="電話交換機">電話交換機</option><option value="對講機">對講機</option><option value="網路系統">網路系統</option><option value="其他">其他</option></select>
         </div>
         <div id="taskList" style="padding:15px"></div>
     </div>
@@ -248,11 +250,13 @@ document.getElementById('faultForm').addEventListener('submit', function(e) {
 function renderTasks() {
     const container = document.getElementById('taskList');
     const statusFilter = document.getElementById('filterStatus').value;
-    const categoryFilter = document.getElementById('filterCategory').value;
+    const categoryFilterText = document.getElementById("filterCategory").value.toLowerCase();
+    const categoryFilterOld = document.getElementById('filterCategory').value;
     
     let filtered = tasks.filter(t => {
         if (statusFilter && t.status !== statusFilter) return false;
-        if (categoryFilter && t.faultCategory !== categoryFilter) return false;
+        if (categoryFilterOld && t.faultCategory !== categoryFilterOld) return false;
+        if (categoryFilterText && !t.faultCategory.toLowerCase().includes(categoryFilterText) && !t.faultBrand.toLowerCase().includes(categoryFilterText)) return false;
         return true;
     });
     
