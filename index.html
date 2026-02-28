@@ -1,279 +1,478 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>弱電工程客服系統 V7</title>
-    <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        :root{--primary:#1e3c72;--primary-light:#2a5298;--success:#28a745;--warning:#ffc107;--danger:#dc3545}
-        body{font-family:"Noto Sans TC","Microsoft JhengHei",Arial,sans-serif;background:linear-gradient(135deg,#1e3c72,#2a5298);min-height:100vh;padding:10px}
-        .container{max-width:800px;margin:0 auto;background:#fff;border-radius:15px;box-shadow:0 10px 40px rgba(0,0,0,.2)}
-        .navbar{background:var(--primary);color:#fff;padding:15px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
-        .navbar h1{font-size:18px}
-        .nav-buttons{display:flex;gap:8px;flex-wrap:wrap}
-        .nav-btn{padding:8px 12px;background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:20px;cursor:pointer;font-size:13px}
-        .nav-btn:hover,.nav-btn.active{background:rgba(255,255,255,.4)}
-        .tab-content{display:none}
-        .tab-content.active{display:block}
-        .form-section{padding:20px;border-bottom:2px solid #f0f0f0}
-        .form-section h2{color:var(--primary);font-size:16px;margin-bottom:15px;padding-left:10px;border-left:4px solid var(--primary)}
-        .form-grid{display:grid;grid-template-columns:1fr;gap:15px}
-        @media(min-width:768px){.form-grid{grid-template-columns:1fr 1fr}}
-        .form-group{margin-bottom:15px}
-        label{display:block;margin-bottom:5px;color:#333;font-weight:500;font-size:14px}
-        label .required{color:var(--danger)}
-        input,select,textarea{width:100%;padding:12px;border:2px solid #e0e0e0;border-radius:8px;font-size:16px;font-family:inherit}
-        input:focus,select:focus,textarea:focus{outline:none;border-color:var(--primary-light)}
-        textarea{min-height:80px;resize:vertical}
-        .hidden{display:none !important}
-        .btn{padding:12px 25px;border:none;border-radius:8px;font-size:16px;font-weight:bold;cursor:pointer;width:100%;background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff}
-        @media(min-width:768px){.btn{width:auto}}
-        .task-card{background:#fff;border:1px solid #ddd;border-radius:10px;padding:15px;margin-bottom:15px}
-        .task-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-        .task-id{background:var(--primary);color:#fff;padding:5px 12px;border-radius:15px;font-size:12px}
-        .task-status{padding:5px 12px;border-radius:15px;font-size:12px;font-weight:bold}
-        .status-new{background:#e3f2fd;color:#1565c0}
-        .status-processing{background:#fff3e0;color:#e65100}
-        .status-completed{background:#e8f5e9;color:#2e7d32}
-        .task-info{font-size:13px}
-        .task-actions{display:flex;gap:10px;margin-top:10px}
-        .task-actions button{flex:1;padding:10px;border:none;border-radius:8px;cursor:pointer}
-        .btn-primary{background:var(--primary);color:#fff}
-        .btn-success{background:var(--success);color:#fff}
-        .filter-bar{padding:15px;background:#f8f9fa;display:flex;gap:10px;flex-wrap:wrap}
-        .filter-bar select{flex:1;min-width:140px}
-        .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:1000;overflow-y:auto}
-        .modal.active{display:block}
-        .modal-content{background:#fff;margin:20px auto;max-width:500px;border-radius:15px;padding:20px}
-        .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
-        .modal-close{background:0;border:none;font-size:24px;cursor:pointer}
-        .note{font-size:12px;color:#666;margin-top:5px}
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>弱電工程客服系統 V8</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"><\/script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--p:#1e3c72;--pl:#2a5298;--s:#28a745;--w:#ffc107;--d:#dc3545;--i:#17a2b8}
+body{font-family:"Noto Sans TC","Microsoft JhengHei",Arial;background:linear-gradient(135deg,#1e3c72,#2a5298);min-height:100vh;padding:10px}
+.c{max-width:1200px;margin:0 auto;background:#fff;border-radius:15px;box-shadow:0 10px 40px rgba(0,0,0,.2)}
+.n{background:var(--p);color:#fff;padding:15px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.n h1{font-size:18px}
+.nb{display:flex;gap:8px;flex-wrap:wrap}
+.nb button{padding:8px 12px;background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:20px;cursor:pointer;font-size:13px}
+.nb button:hover,.nb button.active{background:rgba(255,255,255,.4)}
+.t{display:none}
+.t.active{display:block}
+.s{padding:20px;border-bottom:2px solid #f0f0f0}
+.s h2{color:var(--p);font-size:16px;margin-bottom:15px;padding-left:10px;border-left:4px solid var(--p)}
+.g{display:grid;grid-template-columns:1fr;gap:15px}
+@media(min-width:768px){.g{grid-template-columns:1fr 1fr}.gf{grid-template-columns:1fr}}
+.f{margin-bottom:15px}
+.f label{display:block;margin-bottom:5px;color:#333;font-weight:500;font-size:14px}
+.f label .r{color:var(--d)}
+.f input,.f select,.f textarea{width:100%;padding:12px;border:2px solid #e0e0e0;border-radius:8px;font-size:16px;font-family:inherit}
+.f input:focus,.f select:focus,.f textarea:focus{outline:none;border-color:var(--pl)}
+.f textarea{min-height:80px;resize:vertical}
+.h{display:none!important}
+.u{border:2px dashed #ccc;border-radius:10px;padding:20px;text-align:center;cursor:pointer;background:#fafafa}
+.u:hover{border-color:var(--p)}
+.u input{display:none}
+.fi{display:flex;align-items:center;padding:10px;background:#f5f5f5;border-radius:8px;margin-bottom:8px}
+.fr{color:var(--d);cursor:pointer;padding:5px}
+.b{padding:12px 25px;border:none;border-radius:8px;font-size:16px;font-weight:bold;cursor:pointer;width:100%;background:linear-gradient(135deg,var(--p),var(--pl));color:#fff}
+@media(min-width:768px){.b{width:auto}}
+.bs{background:var(--s);color:#fff}
+.bw{background:var(--w);color:#333}
+.bd{background:var(--d);color:#fff}
+.bi{background:var(--i);color:#fff}
+.tc{background:#fff;border:1px solid #ddd;border-radius:10px;padding:15px;margin-bottom:15px}
+.th{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:10px}
+.ti{background:var(--p);color:#fff;padding:5px 12px;border-radius:15px;font-size:12px}
+.ts{padding:5px 12px;border-radius:15px;font-size:12px;font-weight:bold}
+.tn{background:#e3f2fd;color:#1565c0}
+.tp{background:#fff3e0;color:#e65100}
+.ta{background:#e8f5e9;color:#2e7d32}
+.ti2{font-size:13px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:480px){.ti2{grid-template-columns:1fr}}
+.taction{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+.taction button{flex:1;min-width:80px;padding:10px;border:none;border-radius:8px;cursor:pointer;font-size:14px}
+.fb{padding:15px;background:#f8f9fa;display:flex;gap:10px;flex-wrap:wrap}
+.fb select,.fb input{flex:1;min-width:100px}
+.m{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:1000;overflow-y:auto}
+.m.active{display:block}
+.mc{background:#fff;margin:20px auto;max-width:600px;border-radius:15px;padding:20px;max-height:90vh;overflow-y:auto}
+.mh{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:10px;border-bottom:2px solid #f0f0f0}
+.mc .x{background:0;border:none;font-size:24px;cursor:pointer}
+.ec{background:#fff;border:1px solid #ddd;border-radius:10px;padding:15px;margin-bottom:15px}
+.eh{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.en{font-size:18px;font-weight:bold;color:var(--p)}
+.el{background:var(--i);color:#fff;padding:3px 10px;border-radius:10px;font-size:12px}
+.ed{font-size:13px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.rg{display:grid;grid-template-columns:1fr;gap:15px}
+@media(min-width:768px){.rg{grid-template-columns:1fr 1fr}}
+.rc{background:#fff;border:2px solid #e0e0e0;border-radius:10px;padding:15px}
+.rc h4{color:var(--p);margin-bottom:10px}
+.ri{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f0f0f0}
+.ri:last-child{border-bottom:none}
+.ri a{color:var(--pl);text-decoration:none;font-size:14px;flex:1}
+.rt{font-size:11px;padding:3px 8px;border-radius:10px;background:#e0e0e0}
+.rtv{background:#ffebee;color:#c62828}
+.rtm{background:#e3f2fd;color:#1565c0}
+.sg{display:grid;grid-template-columns:1fr;gap:20px}
+@media(min-width:768px){.sg{grid-template-columns:1fr 1fr}}
+.sc{background:#fff;border:2px solid #e0e0e0;border-radius:10px;padding:15px}
+.sc h4{color:var(--p);margin-bottom:15px}
+.cc{position:relative;height:250px}
+.ri2{display:flex;justify-content:space-between;align-items:center;padding:10px;background:#f5f5f5;border-radius:8px;margin-bottom:8px}
+.ei{display:flex;justify-content:space-between;padding:10px;border-bottom:1px solid #eee}
+.fab{position:fixed;bottom:30px;right:30px;width:60px;height:60px;border-radius:50%;background:var(--p);color:#fff;font-size:30px;border:none;box-shadow:0 4px 15px rgba(0,0,0,.3);cursor:pointer}
+.pt{width:100%;border-collapse:collapse;margin-top:10px}
+.pt th,.pt td{padding:10px;text-align:left;border:1px solid #ddd;font-size:14px}
+.pt th{background:var(--p);color:#fff}
+.pn{background:#fff3cd;border:1px solid #ffc107;border-radius:8px;padding:12px;margin-top:10px;font-size:13px}
+.as{margin-top:15px;padding:15px;background:#f8f9fa;border-radius:8px}
+.ai{display:flex;align-items:center;gap:10px;padding:10px;background:#fff;border-radius:8px;border:1px solid #ddd;margin-bottom:8px}
+.ai img{width:60px;height:60px;object-fit:cover;border-radius:5px}
+.af{flex:1}
+.an{font-size:14px;font-weight:500}
+.asz{font-size:12px;color:#666}
+.ad{padding:8px 15px;background:var(--p);color:#fff;border-radius:5px;text-decoration:none;font-size:13px}
+</style>
 </head>
 <body>
-<div class="container">
-    <div class="navbar">
-        <h1>弱電工程客服系統</h1>
-        <div class="nav-buttons">
-            <button class="nav-btn active" onclick="showTab('new')">+ 新建案件</button>
-            <button class="nav-btn" onclick="showTab('list')">案件列表</button>
-        </div>
-    </div>
-    
-    <div id="tab-new" class="tab-content active">
-        <form id="faultForm">
-            <div class="form-section">
-                <h2>客戶資訊</h2>
-                <div class="form-grid">
-                    <div class="form-group"><label>接收問題人員 <span class="required">*</span></label><input type="text" name="receiver" required></div>
-                    <div class="form-group"><label>客戶名稱 <span class="required">*</span></label><input type="text" name="customerName" required></div>
-                    <div class="form-group"><label>客戶聯絡人 <span class="required">*</span></label><input type="text" name="contactPerson" required></div>
-                    <div class="form-group"><label>客戶電話 <span class="required">*</span></label><input type="tel" name="contactPhone" required></div>
-                    <div class="form-group"><label>問題發生時間 <span class="required">*</span></label><input type="datetime-local" name="faultDate" required></div>
-                </div>
-            </div>
-            
-            <div class="form-section">
-                <h2>問題描述</h2>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>問題分類 <span class="required">*</span></label>
-                        <select id="categorySelect" required>
-                            <option value="">請選擇問題類型</option>
-                            <option value="監視系統">監視系統</option>
-                            <option value="電話交換機">電話交換機系統</option>
-                            <option value="對講機">社區對講機系統</option>
-                            <option value="網路系統">網路系統</option>
-                            <option value="其他">其他</option>
-                        </select>
-                    </div>
-                    
-                    <!-- 選擇其他時顯示的手動輸入欄位 -->
-                    <div class="form-group hidden" id="categoryOtherGroup">
-                        <label>請輸入問題分類 <span class="required">*</span></label>
-                        <input type="text" id="categoryOther" placeholder="例如：門禁系統、保全系統">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>廠牌 <span class="required">*</span></label>
-                        <select id="brandSelect" name="faultBrand" required disabled>
-                            <option value="">請先選擇問題分類</option>
-                        </select>
-                    </div>
-                    
-                    <!-- 選擇其他時顯示的手動輸入欄位 -->
-                    <div class="form-group hidden" id="brandOtherGroup">
-                        <label>請輸入廠牌名稱 <span class="required">*</span></label>
-                        <input type="text" id="brandOther" placeholder="例如：XXX牌">
-                    </div>
-                    
-                    <div class="form-group" style="grid-column:1/-1">
-                        <label>問題描述 <span class="required">*</span></label>
-                        <textarea name="faultDescription" required></textarea>
-                    </div>
-                </div>
-            </div>
-            
-            <div style="padding:20px"><button type="submit" class="btn">提交障礙申報</button></div>
-        </form>
-    </div>
-    
-    <div id="tab-list" class="tab-content">
-        <div class="filter-bar">
-            <select id="filterStatus" onchange="renderTasks()"><option value="">全部狀態</option><option value="new">新案件</option><option value="processing">處理中</option><option value="completed">已完成</option></select>
-            <input type="text" id="filterCategory" placeholder="分類關鍵字..." onkeyup="renderTasks()">
-            <select id="filterCategoryOld" style="display:none" onchange="renderTasks()"><option value="">全部類型</option><option value="監視系統">監視系統</option><option value="電話交換機">電話交換機</option><option value="對講機">對講機</option><option value="網路系統">網路系統</option><option value="其他">其他</option></select>
-            <select id="filterCategory onchange="renderTasks()"><option value="">全部類型</option><option value="監視系統">監視系統</option><option value="電話交換機">電話交換機</option><option value="對講機">對講機</option><option value="網路系統">網路系統</option><option value="其他">其他</option></select>
-        </div>
-        <div id="taskList" style="padding:15px"></div>
-    </div>
+<div class="c">
+<div class="n"><h1>弱電工程客服系統 V8</h1>
+<div class="nb">
+<button class="active" onclick="showTab('new')">+ 新建案件</button>
+<button onclick="showTab('list')">案件列表</button>
+<button onclick="showTab('engineer')">工程人員</button>
+<button onclick="showTab('resource')">教學資源</button>
+<button onclick="showTab('stats')">統計分析</button>
+</div>
 </div>
 
-<div id="detailModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header"><h2>案件詳情</h2><button class="modal-close" onclick="closeModal()">X</button></div>
-        <div id="modalBody"></div>
-    </div>
+<div id="tab-new" class="t active">
+<form id="faultForm">
+<div class="s"><h2>客戶資訊</h2>
+<div class="g">
+<div class="f"><label>接收問題人員 <span class="r">*</span></label><input type="text" name="receiver" required></div>
+<div class="f"><label>客戶名稱 <span class="r">*</span></label><input type="text" name="customerName" required></div>
+<div class="f"><label>客戶聯絡人 <span class="r">*</span></label><input type="text" name="contactPerson" required></div>
+<div class="f"><label>客戶電話 <span class="r">*</span></label><input type="tel" name="contactPhone" required></div>
+<div class="f"><label>問題發生時間 <span class="r">*</span></label><input type="datetime-local" name="faultDate" required></div>
 </div>
+</div>
+<div class="s"><h2>問題描述</h2>
+<div class="g">
+<div class="f"><label>問題分類 <span class="r">*</span></label>
+<select id="categorySelect" required>
+<option value="">請選擇問題類型</option>
+<option value="監視系統">監視系統</option>
+<option value="電話交換機">電話交換機系統</option>
+<option value="對講機">社區對講機系統</option>
+<option value="網路系統">網路系統</option>
+<option value="其他">其他</option>
+</select></div>
+<div class="f h" id="categoryOtherGroup"><label>請輸入問題分類 <span class="r">*</span></label><input type="text" id="categoryOther" placeholder="例如：門禁系統"></div>
+<div class="f"><label>廠牌 <span class="r">*</span></label>
+<select id="brandSelect" name="faultBrand" required disabled><option value="">請先選擇問題分類</option></select></div>
+<div class="f h" id="brandOtherGroup"><label>請輸入廠牌名稱 <span class="r">*</span></label><input type="text" id="brandOther" placeholder="例如：XXX牌"></div>
+<div class="f"><label>指派工程人員</label><select id="assignEngineer"><option value="">請選擇工程人員</option></select></div>
+<div class="f gf"><label>問題描述 <span class="r">*</span></label><textarea name="faultDescription" required></textarea></div>
+<div class="f gf"><label>問題照片/影片</label>
+<div class="u" onclick="document.getElementById('fileInput').click()"><div>📎 點擊上傳檔案 (JPG, PNG, MP4, PDF 最大5MB)</div></div>
+<input type="file" id="fileInput" multiple accept="image/*,video/*,.pdf" onchange="handleFileUpload(event)">
+<div id="fileList"></div></div>
+</div>
+</div>
+</div>
+<div class="s"><h2>收費標準</h2>
+<table class="pt"><tr><th>項目</th><th>費用</th><th>說明</th></tr>
+<tr><td>保固期內</td><td><strong>免費</strong></td><td>一年保固內免費維修</td></tr>
+<tr><td>基本車馬費</td><td><strong>800 元</strong></td><td>每次出車基本費用</td></tr>
+<tr><td>查修工資</td><td><strong>待報價</strong></td><td>依問題複雜程度</td></tr>
+<tr><td>稅金</td><td><strong>+5%</strong></td><td>需開發票者加收</td></tr>
+<tr><td>更換新品</td><td><strong>另計</strong></td><td>材料費另行報價</td></tr></table>
+<div class="pn">實際收費以工程人員現場評估為準</div>
+</div>
+<div style="padding:20px"><button type="submit" class="b">提交障礙申報</button></div>
+</form>
+</div>
+
+<div id="tab-list" class="t">
+<div class="fb">
+<select id="filterStatus" onchange="renderTasks()"><option value="">全部狀態</option><option value="new">新案件</option><option value="processing">處理中</option><option value="completed">已完成</option></select>
+<select id="filterCategory" onchange="renderTasks()"><option value="">全部類型</option><option value="監視系統">監視系統</option><option value="電話交換機">電話交換機</option><option value="對講機">對講機</option><option value="網路系統">網路系統</option></select>
+<select id="filterEngineer" onchange="renderTasks()"><option value="">全部工程人員</option></select>
+<input type="text" id="filterKeyword" placeholder="關鍵字搜尋..." onkeyup="renderTasks()">
+</div>
+<div id="taskList" style="padding:15px"></div>
+</div>
+
+<div id="tab-engineer" class="t">
+<div class="fb"><button class="b" onclick="showEngineerModal()">+ 新增工程人員</button></div>
+<div id="engineerList" style="padding:15px"></div>
+</div>
+
+<div id="tab-resource" class="t">
+<div class="s"><h2>產品操作教學及說明書下載</h2>
+<div class="rg">
+<div class="rc"><h4>監視系統</h4>
+<div class="ri"><span class="rt rtv">影片</span><a href="https://www.youtube.com/results?search_query=%E6%98%89%E9%8A%BE%E7%9B%A3%E8%A6%96%E5%99%A8%E5%AE%89%E8%A3%9D" target="_blank">昇銳監視器安裝教學</a></div>
+<div class="ri"><span class="rt rtv">影片</span><a href="https://www.youtube.com/results?search_query=KIM%E5%BA%B5%E5%BB%A3+%E8%A8%AD%E5%AE%9A" target="_blank">KIM廣佑設定教學</a></div>
+</div>
+<div class="rc"><h4>電話交換機系統</h4>
+<div class="ri"><span class="rt rtv">影片</span><a href="https://www.youtube.com/results?search_query=%E6%9D%B1%E8%A8%8A%E9%9B%BB%E8%A9%B1%E4%BA%A4%E6%8F%9B%E6%A9%9B%E8%A8%AD%E5%AE%9A" target="_blank">東訊交換機設定教學</a></div>
+<div class="ri"><span class="rt rtv">影片</span><a href="https://www.youtube.com/results?search_query=%E9%80%9A%E8%88%AA%E5%85%AC%E5%90%88%E9%9B%BB%E8%A9%B1%E4%BA%A4%E6%8F%9B" target="_blank">通航聯盟操作教學</a></div>
+<div class="ri"><span class="rt rtv">影片</span><a href="https://www.youtube.com/results?search_query=%E8%90%AC%E5%9B%BD%E9%9B%BB%E8%A9%B1%E4%BA%A4%E6%8F%9B" target="_blank">萬國交換機設定</a></div>
+</div>
+<div class="rc"><h4>社區對講機系統</h4>
+<div class="ri"><span class="rt rtv">影片</span><a href="https://www.youtube.com/results?search_query=%E6%AD%90%E7%9B%8A%E5%B0%8D%E8%AA%AA%E6%9C%BA" target="_blank">歐益對講機安裝教學</a></div>
+<div class="ri"><span class="rt rtv">影片</span><a href="https://www.youtube.com/results?search_query=%E4%BF%9D%E6%B0%8F%E7%89%88%E5%B0%8D%E8%AA%AA%E6%9C%BA" target="_blank">俞氏牌對講機設定</a></div>
+<div class="ri"><span class="rt rtv">影片</span><a href="https://www.youtube.com/results?search_query=%E9%8E%9D%E9%8B%89%E5%B0%8D%E8%AA%AA%E6%9C%BA" target="_blank">鎧鋒對講機操作教學</a></div>
+</div>
+<div class="rc"><h4>網路系統</h4>
+<div class="ri"><span class="rt rtv">影片</span><a href="https://www.youtube.com/results?search_query=TP-link+%E8%A8%AD%E5%AE%9A%E6%95%99%E5%AD%B8" target="_blank">TP-link 路由器設定教學</a></div>
+<div class="ri"><span class="rt rtm">說明書</span><a href="https://www.tp-link.com/tw/support/download/" target="_blank">TP-link 說明書下載</a></div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="tab-stats" class="t">
+<div class="s"><h2>每月障礙申報統計分析</h2>
+<div class="fb">
+<select id="statsMonth" onchange="renderStats()"><option value="">請選擇月份</option></select>
+<button class="b" onclick="renderStats()">更新統計</button>
+</div>
+<div class="sg">
+<div class="sc"><h4>📊 障礙分類統計 (圓餅圖)</h4><div class="cc"><canvas id="categoryPieChart"></canvas></div></div>
+<div class="sc"><h4>👷 工程人員處理案件數 (長條圖)</h4><div class="cc"><canvas id="engineerBarChart"></canvas></div></div>
+<div class="sc"><h4>📈 每月案件趨勢 (曲線圖)</h4><div class="cc"><canvas id="trendLineChart"></canvas></div></div>
+<div class="sc"><h4>🏆 障礙類型排名</h4><div id="rankingList"></div></div>
+</div>
+<div class="sc" style="margin-top:20px"><h4>⏱️ 處理效率分析</h4><div id="efficiencyStats"></div></div>
+</div>
+</div>
+</div>
+
+<div id="engineerModal" class="m">
+<div class="mc">
+<div class="mh"><h2 id="engineerModalTitle">新增工程人員</h2><button class="x" onclick="closeEngineerModal()">X</button></div>
+<form id="engineerForm">
+<input type="hidden" id="engineerId">
+<div class="g">
+<div class="f"><label>姓名 <span class="r">*</span></label><input type="text" id="engName" required></div>
+<div class="f"><label>職級 <span class="r">*</span></label><select id="engLevel" required><option value="資深工程師">資深工程師</option><option value="工程師">工程師</option><option value="助理工程師">助理工程師</option></select></div>
+<div class="f"><label>入職日期 <span class="r">*</span></label><input type="date" id="engJoinDate" required></div>
+<div class="f"><label>年資</label><input type="text" id="engSeniority" placeholder="例：3年"></div>
+<div class="f"><label>聯絡電話 <span class="r">*</span></label><input type="tel" id="engPhone" required></div>
+<div class="f"><label>問題處理專長</label><input type="text" id="engSpecialty" placeholder="例：監視系統、交換機"></div>
+<div class="f"><label>證照期限</label><input type="date" id="engCertExpiry"></div>
+<div class="f gf"><label>備註</label><textarea id="engNotes" rows="2"></textarea></div>
+</div>
+<div style="margin-top:20px;display:flex;gap:10px">
+<button type="submit" class="b" style="flex:1">儲存</button>
+<button type="button" class="b bd" onclick="closeEngineerModal()">取消</button>
+</div>
+</form>
+</div>
+</div>
+
+<div id="detailModal" class="m">
+<div class="mc">
+<div class="mh"><h2 id="modalTitle">案件詳情</h2><button class="x" onclick="closeModal()">X</button></div>
+<div id="modalBody"></div>
+</div>
+</div>
+
+<button class="fab" onclick="showTab('new')">+</button>
 
 <script>
-// 品牌資料
-const brandsData = {
-    "監視系統": ["昇銳", "KIM廣佑", "其他"],
-    "電話交換機": ["東訊", "通航聯盟", "萬國", "其他"],
-    "對講機": ["歐益", "俞氏牌", "鎧鋒", "其他"],
-    "網路系統": ["TP-link", "其他"],
-    "其他": ["其他"]
-};
+const brandsData = {"監視系統":["昇銳","KIM廣佑","其他"],"電話交換機":["東訊","通航聯盟","萬國","其他"],"對講機":["歐益","俞氏牌","鎧鋒","其他"],"網路系統":["TP-link","其他"],"其他":["其他"]};
 
-// 當分類改變時
-document.getElementById('categorySelect').addEventListener('change', function() {
-    const category = this.value;
-    const brandSelect = document.getElementById('brandSelect');
-    const categoryOtherGroup = document.getElementById('categoryOtherGroup');
-    const brandOtherGroup = document.getElementById('brandOtherGroup');
-    
-    // 如果選擇「其他」，顯示分類的手動輸入欄位
-    if (category === '其他') {
-        categoryOtherGroup.classList.remove('hidden');
-    } else {
-        categoryOtherGroup.classList.add('hidden');
-    }
-    
-    // 重置廠牌選單
-    brandOtherGroup.classList.add('hidden');
-    
-    if (category && brandsData[category]) {
-        brandSelect.disabled = false;
-        brandSelect.innerHTML = '<option value="">請選擇廠牌</option>';
-        brandsData[category].forEach(brand => {
-            brandSelect.innerHTML += '<option value="' + brand + '">' + brand + '</option>';
-        });
-    } else {
-        brandSelect.disabled = true;
-        brandSelect.innerHTML = '<option value="">請先選擇問題分類</option>';
-    }
-});
-
-// 當廠牌改變時
-document.getElementById('brandSelect').addEventListener('change', function() {
-    const brand = this.value;
-    const brandOtherGroup = document.getElementById('brandOtherGroup');
-    
-    // 如果選擇「其他」，顯示廠牌的手動輸入欄位
-    if (brand === '其他') {
-        brandOtherGroup.classList.remove('hidden');
-    } else {
-        brandOtherGroup.classList.add('hidden');
-    }
-});
-
-// 顯示分頁
-function showTab(tabId) {
-    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('tab-' + tabId).classList.add('active');
-    event.target.classList.add('active');
-}
-
-// 任務資料
+let uploadedFiles = [];
+let engineers = JSON.parse(localStorage.getItem('engineers')) || [{id:'E1',name:'王小明',level:'資深工程師',joinDate:'2020-01-15',seniority:'6年',phone:'0912-345-678',specialty:'監視系統、交換機',certExpiry:'2027-06-30',notes:''},{id:'E2',name:'李志強',level:'工程師',joinDate:'2022-03-20',seniority:'3年',phone:'0923-456-789',specialty:'對講機、網路',certExpiry:'2026-12-31',notes:''}];
 let tasks = JSON.parse(localStorage.getItem('faultTasks')) || [];
 
-// 提交表單
-document.getElementById('faultForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    
-    // 取得分類和廠牌
-    let category = document.getElementById('categorySelect').value;
-    let brand = document.getElementById('brandSelect').value;
-    
-    // 如果選擇「其他」，使用手動輸入的值
-    if (category === '其他') {
-        category = document.getElementById('categoryOther').value || '其他';
-    }
-    if (brand === '其他') {
-        brand = document.getElementById('brandOther').value || '其他';
-    }
-    
-    const task = {
-        id: 'F' + Date.now(),
-        receiver: formData.get('receiver'),
-        customerName: formData.get('customerName'),
-        contactPerson: formData.get('contactPerson'),
-        contactPhone: formData.get('contactPhone'),
-        faultDate: formData.get('faultDate'),
-        faultCategory: category,
-        faultBrand: brand,
-        faultDescription: formData.get('faultDescription'),
-        status: 'new',
-        createdAt: new Date().toISOString()
-    };
-    
-    tasks.unshift(task);
-    localStorage.setItem('faultTasks', JSON.stringify(tasks));
-    alert('案件已提交！編號：' + task.id);
-    
-    // 重置表單
-    e.target.reset();
-    document.getElementById('brandSelect').disabled = true;
-    document.getElementById('brandSelect').innerHTML = '<option value="">請先選擇問題分類</option>';
-    document.getElementById('categoryOtherGroup').classList.add('hidden');
-    document.getElementById('brandOtherGroup').classList.add('hidden');
-    
-    showTab('list');
-    renderTasks();
-});
-
-// 渲染任務列表
-function renderTasks() {
-    const container = document.getElementById('taskList');
-    const statusFilter = document.getElementById('filterStatus').value;
-    const categoryFilterText = document.getElementById("filterCategory").value.toLowerCase();
-    const categoryFilterOld = document.getElementById('filterCategory').value;
-    
-    let filtered = tasks.filter(t => {
-        if (statusFilter && t.status !== statusFilter) return false;
-        if (categoryFilterOld && t.faultCategory !== categoryFilterOld) return false;
-        if (categoryFilterText && !t.faultCategory.toLowerCase().includes(categoryFilterText) && !t.faultBrand.toLowerCase().includes(categoryFilterText)) return false;
-        return true;
-    });
-    
-    if (filtered.length === 0) {
-        container.innerHTML = '<p style="text-align:center;color:#666;padding:40px">尚無案件</p>';
-        return;
-    }
-    
-    container.innerHTML = filtered.map(t => {
-        const statusClass = t.status === 'new' ? 'status-new' : t.status === 'processing' ? 'status-processing' : 'status-completed';
-        const statusText = t.status === 'new' ? '新案件' : t.status === 'processing' ? '處理中' : '已完成';
-        return '<div class="task-card"><div class="task-header"><span class="task-id">' + t.id + '</span><span class="task-status ' + statusClass + '">' + statusText + '</span></div><div class="task-info"><div><strong>客戶：</strong>' + t.customerName + '</div><div><strong>類型：</strong>' + t.faultCategory + ' - ' + t.faultBrand + '</div></div><div class="task-actions"><button class="btn-primary" onclick="alert(\'' + t.faultDescription.replace(/'/g, "\\'") + '\')">查看描述</button></div></div>';
-    }).join('');
+function initStatsMonth(){
+const sel = document.getElementById('statsMonth');
+const now = new Date();
+for(let i=0;i<12;i++){
+const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
+sel.innerHTML += '<option value="'+d.getFullYear()+'-'+(d.getMonth()+1)+'">'+d.getFullYear()+'年'+(d.getMonth()+1)+'月</option>';
+}
+sel.value = now.getFullYear()+'-'+(now.getMonth()+1);
 }
 
-// 初始渲染
+function updateEngineerSelect(){
+const sel = document.getElementById('assignEngineer');
+const f = document.getElementById('filterEngineer');
+sel.innerHTML = '<option value="">請選擇工程人員</option>';
+f.innerHTML = '<option value="">全部工程人員</option>';
+engineers.forEach(e => {sel.innerHTML += '<option value="'+e.id+'">'+e.name+' ('+e.level+')</option>';f.innerHTML += '<option value="'+e.id+'">'+e.name+'</option>';});
+}
+
+document.getElementById('categorySelect').addEventListener('change', function() {
+const c = this.value;
+const bs = document.getElementById('brandSelect');
+const cog = document.getElementById('categoryOtherGroup');
+const bog = document.getElementById('brandOtherGroup');
+if(c==='其他')cog.classList.remove('h');else cog.classList.add('h');
+bog.classList.add('h');
+if(c && brandsData[c]){bs.disabled=false;bs.innerHTML='<option value="">請選擇廠牌</option>';brandsData[c].forEach(b=>{bs.innerHTML+='<option value="'+b+'">'+b+'</option>'});}
+else{bs.disabled=true;bs.innerHTML='<option value="">請先選擇問題分類</option>';}
+});
+
+document.getElementById('brandSelect').addEventListener('change', function() {
+const bog = document.getElementById('brandOtherGroup');
+if(this.value==='其他')bog.classList.remove('h');else bog.classList.add('h');
+});
+
+function handleFileUpload(e){
+const files = e.target.files;
+for(let i=0;i<files.length;i++){
+const f = files[i];
+if(f.size>5*1024*1024){alert('檔案 '+f.name+' 超過5MB');continue;}
+const r = new FileReader();
+r.onload = function(ev){uploadedFiles.push({name:f.name,size:f.size,type:f.type,data:ev.target.result});renderFileList();};
+r.readAsDataURL(f);
+}
+}
+
+function renderFileList(){
+const fl = document.getElementById('fileList');
+fl.innerHTML = '';
+uploadedFiles.forEach((f,i)=>{fl.innerHTML += '<div class="fi"><div style="flex:1">'+f.name+' ('+Math.round(f.size/1024)+' KB)</div><span class="fr" onclick="removeFile('+i+')">✕</span></div>';});
+}
+
+function removeFile(i){uploadedFiles.splice(i,1);renderFileList();}
+
+function showTab(tid){
+document.querySelectorAll('.t').forEach(t=>t.classList.remove('active'));
+document.querySelectorAll('.nb button').forEach(b=>b.classList.remove('active'));
+document.getElementById('tab-'+tid).classList.add('active');
+event.target.classList.add('active');
+if(tid==='stats')renderStats();
+}
+
+function renderEngineers(){
+const l = document.getElementById('engineerList');
+if(engineers.length===0){l.innerHTML='<p style="text-align:center;color:#666;padding:40px">尚無工程人員資料</p>';return;}
+l.innerHTML = engineers.map(e=>'<div class="ec"><div class="eh"><span class="en">'+e.name+'</span><span class="el">'+e.level+'</span></div><div class="ed"><div><strong>入職：</strong>'+e.joinDate+'</div><div><strong>年資：</strong>'+(e.seniority||'-')+'</div><div><strong>電話：</strong>'+e.phone+'</div><div><strong>證照：</strong>'+(e.certExpiry||'-')+'</div><div style="grid-column:1/-1"><strong>專長：</strong>'+(e.specialty||'-')+'</div></div><div style="margin-top:10px;display:flex;gap:10px"><button class="b bw" onclick="editEngineer(\''+e.id+'\')">編輯</button><button class="b bd" onclick="deleteEngineer(\''+e.id+'\')">刪除</button></div></div>').join('');
+}
+
+function showEngineerModal(id=null){
+document.getElementById('engineerModal').classList.add('active');
+if(id){
+const e = engineers.find(x=>x.id===id);
+document.getElementById('engineerModalTitle').innerText='編輯工程人員';
+document.getElementById('engineerId').value=e.id;
+document.getElementById('engName').value=e.name;
+document.getElementById('engLevel').value=e.level;
+document.getElementById('engJoinDate').value=e.joinDate;
+document.getElementById('engSeniority').value=e.seniority||'';
+document.getElementById('engPhone').value=e.phone;
+document.getElementById('engSpecialty').value=e.specialty||'';
+document.getElementById('engCertExpiry').value=e.certExpiry||'';
+document.getElementById('engNotes').value=e.notes||'';
+}else{
+document.getElementById('engineerModalTitle').innerText='新增工程人員';
+document.getElementById('engineerForm').reset();
+document.getElementById('engineerId').value='';
+}
+}
+
+function closeEngineerModal(){document.getElementById('engineerModal').classList.remove('active');}
+function editEngineer(id){showEngineerModal(id);}
+function deleteEngineer(id){if(confirm('確定要刪除此工程人員？')){engineers=engineers.filter(e=>e.id!==id);localStorage.setItem('engineers',JSON.stringify(engineers));renderEngineers();updateEngineerSelect();}}
+
+document.getElementById('engineerForm').addEventListener('submit',function(e){
+e.preventDefault();
+const id = document.getElementById('engineerId').value;
+const eng = {id:id||'E'+Date.now(),name:document.getElementById('engName').value,level:document.getElementById('engLevel').value,joinDate:document.getElementById('engJoinDate').value,seniority:document.getElementById('engSeniority').value,phone:document.getElementById('engPhone').value,specialty:document.getElementById('engSpecialty').value,certExpiry:document.getElementById('engCertExpiry').value,notes:document.getElementById('engNotes').value};
+if(id){const i=engineers.findIndex(x=>x.id===id);engineers[i]=eng;}else{engineers.push(eng);}
+localStorage.setItem('engineers',JSON.stringify(engineers));
+renderEngineers();
+updateEngineerSelect();
+closeEngineerModal();
+alert('儲存成功！');
+});
+
+document.getElementById('faultForm').addEventListener('submit',function(e){
+e.preventDefault();
+let category = document.getElementById('categorySelect').value;
+let brand = document.getElementById('brandSelect').value;
+if(category==='其他')category=document.getElementById('categoryOther').value||'其他';
+if(brand==='其他')brand=document.getElementById('brandOther').value||'其他';
+const fd = new FormData(e.target);
+const task = {id:'F'+Date.now(),receiver:fd.get('receiver'),customerName:fd.get('customerName'),contactPerson:fd.get('contactPerson'),contactPhone:fd.get('contactPhone'),faultDate:fd.get('faultDate'),faultCategory:category,faultBrand:brand,faultDescription:fd.get('faultDescription'),assignEngineer:document.getElementById('assignEngineer').value,attachments:uploadedFiles,status:'new',engineer:'',processDate:'',result:'',createdAt:new Date().toISOString()};
+tasks.unshift(task);
+localStorage.setItem('faultTasks',JSON.stringify(tasks));
+alert('案件已提交！編號：'+task.id);
+e.target.reset();
+uploadedFiles=[];
+document.getElementById('fileList').innerHTML='';
+document.getElementById('brandSelect').disabled=true;
+document.getElementById('brandSelect').innerHTML='<option value="">請先選擇問題分類</option>';
+document.getElementById('categoryOtherGroup').classList.add('h');
+document.getElementById('brandOtherGroup').classList.add('h');
+showTab('list');
 renderTasks();
-</script>
+});
+
+function renderTasks(){
+const c = document.getElementById('taskList');
+const sf = document.getElementById('filterStatus').value;
+const cf = document.getElementById('filterCategory').value;
+const ef = document.getElementById('filterEngineer').value;
+const kf = document.getElementById('filterKeyword').value.toLowerCase();
+const ft = tasks.filter(t=>{if(sf&&t.status!==sf)return false;if(cf&&t.faultCategory!==cf)return false;if(ef&&t.assignEngineer!==ef&&t.engineer!==ef)return false;if(kf&&!t.customerName.toLowerCase().includes(kf)&&!t.contactPerson.toLowerCase().includes(kf)&&!t.faultCategory.toLowerCase().includes(kf)&&!t.faultBrand.toLowerCase().includes(kf))return false;return true});
+if(ft.length===0){c.innerHTML='<p style="text-align:center;color:#666;padding:40px">尚無案件</p>';return;}
+c.innerHTML = ft.map(t=>{const sc=t.status==='new'?'tn':t.status==='processing'?'tp':'ta';const st=t.status==='new'?'新案件':t.status==='processing'?'處理中':'已完成';const en=t.engineer?engineers.find(e=>e.id===t.engineer)?.name||t.engineer:(t.assignEngineer?engineers.find(e=>e.id===t.assignEngineer)?.name||'待指派':'待指派');return '<div class="tc"><div class="th"><span class="ti">'+t.id+'</span><span class="ts '+sc+'">'+st+'</span></div><div class="ti2"><div><strong>客戶：</strong>'+t.customerName+'</div><div><strong>類型：</strong>'+t.faultCategory+' - '+t.faultBrand+'</div><div><strong>工程人員：</strong>'+en+'</div><div><strong>日期：</strong>'+(t.faultDate?t.faultDate.substring(0,10):'-')+'</div></div><div class="taction"><button class="b" onclick="showDetail(\''+t.id+'\')">查看詳情</button>'+(t.status!=='completed'?'<button class="b bs" onclick="acceptTask(\''+t.id+'\')">'+(t.status==='new'?'接單':'處理中')+'</button>':'')+'</div></div>';}).join('');
+}
+
+function showDetail(id){
+const t = tasks.find(x=>x.id===id);
+if(!t)return;
+const sc=t.status==='new'?'tn':t.status==='processing'?'tp':'ta';
+const st=t.status==='new'?'新案件':t.status==='processing'?'處理中':'已完成';
+const en=t.engineer?engineers.find(e=>e.id===t.engineer)?.name||t
+function acceptTask(id){
+const t = tasks.find(x=>x.id===id);
+if(t){
+t.status='processing';
+t.engineer=t.assignEngineer||'手動指派';
+t.processDate=new Date().toLocaleDateString('zh-TW');
+localStorage.setItem('faultTasks',JSON.stringify(tasks));
+renderTasks();
+alert('已接單！');
+}
+}
+
+function completeTask(id){
+const r=prompt('請輸入處理結果：');
+if(r!==null){
+const t = tasks.find(x=>x.id===id);
+if(t){
+t.status='completed';
+t.result=r;
+t.completedAt=new Date().toISOString();
+localStorage.setItem('faultTasks',JSON.stringify(tasks));
+renderTasks();
+closeModal();
+alert('案件已完成！');
+}
+}
+}
+
+function closeModal(){document.getElementById('detailModal').classList.remove('active');}
+document.getElementById('detailModal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+
+function renderStats(){
+const month = document.getElementById('statsMonth').value;
+const mTasks = tasks.filter(t=>t.createdAt && t.createdAt.startsWith(month));
+
+// 分類統計
+const catCounts={};
+mTasks.forEach(t=>{catCounts[t.faultCategory]=(catCounts[t.faultCategory]||0)+1;});
+const catLabels=Object.keys(catCounts);
+const catData=Object.values(catCounts);
+
+// 工程人員統計
+const engCounts={};
+mTasks.forEach(t=>{if(t.engineer||t.assignEngineer){const e=t.engineer||t.assignEngineer;engCounts[e]=(engCounts[e]||0)+1;}});
+const engLabels=Object.keys(engCounts).map(e=>engineers.find(x=>x.id===e)?.name||e);
+const engData=Object.values(engCounts);
+
+// 趨勢統計
+const trendLabels=[];
+const trendData=[];
+for(let i=5;i>=0;i--){
+const d=new Date();
+d.setMonth(d.getMonth()-i);
+const v=d.getFullYear()+'-'+(d.getMonth()+1);
+trendLabels.push(d.getFullYear()+'年'+(d.getMonth()+1)+'月');
+trendData.push(tasks.filter(t=>t.createdAt&&t.createdAt.startsWith(v)).length);
+}
+
+// 排名
+const ranking=Object.entries(catCounts).sort((a,b)=>b[1]-a[1]);
+document.getElementById('rankingList').innerHTML=ranking.map((r,i)=>'<div class="ri2"><span><span class="r">'+(i+1)+'</span> '+r[0]+'</span><span>'+r[1]+'件</span></div>').join('');
+
+// 效率
+const done=mTasks.filter(t=>t.status==='completed').length;
+const total=mTasks.length;
+const rate=total?Math.round(done/total*100):0;
+const waitDays=mTasks.filter(t=>t.status!=='completed'&&t.createdAt).map(t=>{const c=new Date(t.createdAt);const n=new Date();return Math.ceil((n-c)/(1000*60*60*24));});
+const avgWait=waitDays.length?Math.round(waitDays.reduce((a,b)=>a+b,0)/waitDays.length):0;
+document.getElementById('efficiencyStats').innerHTML='<div class="ei"><span>本月總案件</span><span>'+total+'件</span></div><div class="ei"><span>已完成</span><span>'+done+'件</span></div><div class="ei"><span>完成率</span><span>'+rate+'%</span></div><div class="ei"><span>平均等待天數</span><span>'+avgWait+'天</span></div>';
+
+// 繪製圖表
+if(charts.cat)charts.cat.destroy();
+if(charts.eng)charts.eng.destroy();
+if(charts.trend)charts.trend.destroy();
+
+charts.cat=new Chart(document.getElementById('categoryPieChart'),{type:'pie',data:{labels:catLabels, datasets:[{data:catData,backgroundColor:['#FF6384','#36A2EB','#FFCE56','#4BC0C0','#9966FF']}]}});
+charts.eng=new Chart(document.getElementById('engineerBarChart'),{type:'bar',data:{labels:engLabels, datasets:[{label:'處理案件數',data:engData,backgroundColor:'#36A2EB'}]}});
+charts.trend=new Chart(document.getElementById('trendLineChart'),{type:'line',data:{labels:trendLabels, datasets:[{label:'案件數',data:trendData,borderColor:'#FF6384',fill:false}]}});
+}
+
+document.addEventListener('DOMContentLoaded',function(){initStatsMonth();updateEngineerSelect();renderEngineers();renderTasks();});
+<\/script>
 </body>
 </html>
